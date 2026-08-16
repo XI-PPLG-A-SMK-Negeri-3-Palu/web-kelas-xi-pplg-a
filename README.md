@@ -1,6 +1,6 @@
-# XI PPLG A Community Hub
+# Website XI PPLG A
 
-A Role-Based Community Platform & Portfolio Showcase.
+Official Website of Class XI PPLG A.
 
 ## Tech Stack
 - **Frontend:** React (Vite), TypeScript, Tailwind CSS, Zustand, React Router, Swiper, Lucide React

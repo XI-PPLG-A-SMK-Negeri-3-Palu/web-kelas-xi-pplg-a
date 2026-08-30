@@ -1,5 +1,8 @@
 // Peran Pengguna dalam Sistem
-export type UserRole = 'STUDENT' | 'TOP_CONTRIBUTOR' | 'ADMIN';
+export type UserRole = 'STUDENT' | 'ADMIN';
+
+// Jenis media di Galeri
+export type MemoryType = 'IMAGE' | 'VIDEO';
 
 // Profil Utama
 export interface UserProfile {
@@ -9,34 +12,52 @@ export interface UserProfile {
   role: UserRole;
   avatarUrl?: string;
   bio?: string;
-  
+
   // Kosmetik Profil
   profileBorder?: 'border-gold' | 'border-neon' | 'border-default';
-  badges: Badge[]; 
-  
+  badges: Badge[];
+
   // Media Sosial
   socialLinks?: {
     instagram?: string;
     github?: string;
     portfolio?: string;
   };
-  
+
   createdAt: Date;
 }
 
 // Badge (Penghargaan/Identitas)
 export interface Badge {
   id: string;
-  name: string;      // Contoh: "Ketua Kelas", "Ahli CSS"
+  name: string;      // Contoh: "Top Contributor", "Ahli CSS"
   iconUrl: string;
   description: string;
 }
 
-// Galeri Kenangan
+// Galeri Kenangan (mendukung foto & video)
 export interface ClassMemory {
   id: string;
-  imageUrl: string;
+  mediaUrl: string;
+  mediaType: MemoryType;
   caption: string;
   uploadedBy: string; // Merujuk ke id dari UserProfile
   uploadDate: Date;
 }
+
+// Portofolio / Pencapaian -- satu user bisa punya banyak entri
+export interface Portfolio {
+  id: string;
+  title: string;
+  description?: string;
+  category?: string;   // contoh: "Lomba", "Proyek", "Sertifikat"
+  link?: string;
+  imageUrl?: string;
+  ownerId: string;      // Merujuk ke id dari UserProfile
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// CATATAN: tipe `Whitelist` sengaja TIDAK diekspor di sini.
+// Whitelist murni logika verifikasi internal backend (cek saat registrasi),
+// frontend tidak perlu dan tidak boleh tahu isi seluruh daftar whitelist.

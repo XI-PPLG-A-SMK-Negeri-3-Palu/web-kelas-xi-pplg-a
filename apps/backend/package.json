@@ -6,7 +6,10 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "prisma:generate": "dotenv -e ../../.env -- prisma generate",
+    "prisma:studio": "dotenv -e ../../.env -- prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +18,11 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^26.2.0",
+    "@types/node": "^20.14.0",
+    "dotenv-cli": "^11.0.0",
     "prisma": "^6.0.0",
     "tsx": "^4.19.1",
-    "typescript": "^7.0.2"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",

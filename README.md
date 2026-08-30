@@ -1,6 +1,6 @@
 # Website XI PPLG A
 
-Official Website and Community Hub of Class XI PPLG A.
+Official Website of Class XI PPLG A.
 
 ## Technology Stack
 

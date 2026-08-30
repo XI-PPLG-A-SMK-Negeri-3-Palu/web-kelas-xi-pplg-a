@@ -8,13 +8,30 @@ datasource db {
 }
 
 // ------------------------------------
-// MODELS FOR XI PPLG A COMMUNITY HUB
+// MODELS FOR WEBSITE XI PPLG A
 // ------------------------------------
 
+// PERBAIKAN: Role sekarang murni soal IZIN AKSES, bukan pengakuan prestasi.
+// "Top Contributor" tidak lagi di sini -- lihat model Badge + UserBadge.
 enum Role {
   STUDENT
-  TOP_CONTRIBUTOR
   ADMIN
+}
+
+enum MemoryType {
+  IMAGE
+  VIDEO
+}
+
+// BARU: Daftar murid yang berhak mendaftar (diisi manual oleh Admin/Koordinator).
+// Saat seseorang register, sistem cek email mereka ada di sini dulu sebelum
+// membuatkan akun User. Ini mencegah orang luar mengaku murid kelas Anda.
+model Whitelist {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  fullName  String
+  isClaimed Boolean  @default(false) // true setelah orang ybs berhasil register
+  createdAt DateTime @default(now())
 }
 
 model User {
@@ -24,30 +41,32 @@ model User {
   fullName      String
   nickname      String
   role          Role     @default(STUDENT)
-  
+
   // Kosmetik Profil
   avatarUrl     String?
   bio           String?
   profileBorder String   @default("border-default")
-  
+
   // Media Sosial (Format JSON untuk fleksibilitas)
   socialLinks   Json?
-  
+
   // Relasi Database
   badges        UserBadge[]
   memories      ClassMemory[]
-  
+  portfolios    Portfolio[]
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
+// Dipakai untuk badge PRESTASI apa pun -- termasuk "Top Contributor".
+// Bisa dipasang/dicabut ke siapa saja tanpa mengubah Role/izin akses mereka.
 model Badge {
   id          String   @id @default(uuid())
-  name        String   @unique
+  name        String   @unique // contoh: "Top Contributor", "Ahli CSS"
   iconUrl     String
   description String
-  
-  // Relasi Database
+
   users       UserBadge[]
 }
 
@@ -63,14 +82,33 @@ model UserBadge {
   @@id([userId, badgeId])
 }
 
+// PERBAIKAN: generalisasi dari "foto saja" menjadi foto ATAU video,
+// sesuai permintaan ("galeri isinya foto atau video, contoh macam IG").
 model ClassMemory {
-  id          String   @id @default(uuid())
-  imageUrl    String
+  id          String     @id @default(uuid())
+  mediaUrl    String
+  mediaType   MemoryType @default(IMAGE)
   caption     String
-  
-  // Relasi ke User yang mengunggah
+
   uploadedBy  String
-  uploader    User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
-  
-  uploadDate  DateTime @default(now())
+  uploader    User       @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+  uploadDate  DateTime   @default(now())
+}
+
+// BARU: Portofolio/pencapaian, satu orang bisa punya banyak entri
+// (relasi one-to-many User -> Portfolio).
+model Portfolio {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  category    String?  // contoh: "Lomba", "Proyek", "Sertifikat"
+  link        String?  // opsional: link eksternal (GitHub, sertifikat, dsb.)
+  imageUrl    String?  // opsional: gambar sampul/bukti
+
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

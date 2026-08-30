@@ -6,3 +6,5 @@ allowBuilds:
   '@prisma/engines': true
   esbuild: true
   prisma: true
+overrides:
+  deepmerge-ts: '>=8.0.0'

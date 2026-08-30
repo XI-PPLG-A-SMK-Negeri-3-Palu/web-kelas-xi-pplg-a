@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@xi-pplg/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,11 +23,12 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
+    "@xi-pplg/shared-types": "workspace:*",
     "autoprefixer": "^10.5.4",
     "oxlint": "^1.75.0",
     "postcss": "^8.5.26",
     "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
+    "typescript": "^7.0.2",
     "vite": "^8.2.0"
   }
 }

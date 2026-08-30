@@ -1,0 +1,14 @@
+{
+  "name": "web-xi-pplg-a-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "build": "pnpm -r run build",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------
+// MODELS FOR XI PPLG A COMMUNITY HUB
+// ------------------------------------
+
+enum Role {
+  STUDENT
+  TOP_CONTRIBUTOR
+  ADMIN
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  fullName      String
+  nickname      String
+  role          Role     @default(STUDENT)
+  
+  // Kosmetik Profil
+  avatarUrl     String?
+  bio           String?
+  profileBorder String   @default("border-default")
+  
+  // Media Sosial (Format JSON untuk fleksibilitas)
+  socialLinks   Json?
+  
+  // Relasi Database
+  badges        UserBadge[]
+  memories      ClassMemory[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Badge {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  iconUrl     String
+  description String
+  
+  // Relasi Database
+  users       UserBadge[]
+}
+
+// Tabel perantara (Join Table) untuk relasi Many-to-Many antara User dan Badge
+model UserBadge {
+  userId      String
+  badgeId     String
+  assignedAt  DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge       Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+}
+
+model ClassMemory {
+  id          String   @id @default(uuid())
+  imageUrl    String
+  caption     String
+  
+  // Relasi ke User yang mengunggah
+  uploadedBy  String
+  uploader    User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  
+  uploadDate  DateTime @default(now())
+}

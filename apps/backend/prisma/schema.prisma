@@ -7,12 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ------------------------------------
-// MODELS FOR WEBSITE XI PPLG A
-// ------------------------------------
+// ===== WEBSITE XI PPLG A =====
 
-// PERBAIKAN: Role sekarang murni soal IZIN AKSES, bukan pengakuan prestasi.
-// "Top Contributor" tidak lagi di sini -- lihat model Badge + UserBadge.
 enum Role {
   STUDENT
   ADMIN
@@ -23,92 +19,86 @@ enum MemoryType {
   VIDEO
 }
 
-// BARU: Daftar murid yang berhak mendaftar (diisi manual oleh Admin/Koordinator).
-// Saat seseorang register, sistem cek email mereka ada di sini dulu sebelum
-// membuatkan akun User. Ini mencegah orang luar mengaku murid kelas Anda.
+// Border kosmetik profil -- enum, bukan String bebas, biar konsisten
+// dengan tipe di shared-types dan dijaga validitasnya oleh database.
+enum ProfileBorder {
+  DEFAULT
+  GOLD
+  NEON
+}
+
+// Daftar murid yang berhak daftar (diisi manual Admin). Dicek saat
+// registrasi sebelum akun User dibuat.
 model Whitelist {
   id        String   @id @default(uuid())
   email     String   @unique
   fullName  String
-  isClaimed Boolean  @default(false) // true setelah orang ybs berhasil register
+  isClaimed Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
+  id            String        @id @default(uuid())
+  email         String        @unique
   passwordHash  String
   fullName      String
   nickname      String
-  role          Role     @default(STUDENT)
+  role          Role          @default(STUDENT)
 
-  // Kosmetik Profil
   avatarUrl     String?
   bio           String?
-  profileBorder String   @default("border-default")
-
-  // Media Sosial (Format JSON untuk fleksibilitas)
+  profileBorder ProfileBorder @default(DEFAULT)
   socialLinks   Json?
 
-  // Relasi Database
   badges        UserBadge[]
   memories      ClassMemory[]
   portfolios    Portfolio[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
-// Dipakai untuk badge PRESTASI apa pun -- termasuk "Top Contributor".
-// Bisa dipasang/dicabut ke siapa saja tanpa mengubah Role/izin akses mereka.
+// Badge prestasi (termasuk "Top Contributor") -- terpisah dari Role/izin akses.
 model Badge {
-  id          String   @id @default(uuid())
-  name        String   @unique // contoh: "Top Contributor", "Ahli CSS"
+  id          String      @id @default(uuid())
+  name        String      @unique
   iconUrl     String
   description String
-
   users       UserBadge[]
 }
 
-// Tabel perantara (Join Table) untuk relasi Many-to-Many antara User dan Badge
 model UserBadge {
-  userId      String
-  badgeId     String
-  assignedAt  DateTime @default(now())
+  userId     String
+  badgeId    String
+  assignedAt DateTime @default(now())
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge       Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
   @@id([userId, badgeId])
 }
 
-// PERBAIKAN: generalisasi dari "foto saja" menjadi foto ATAU video,
-// sesuai permintaan ("galeri isinya foto atau video, contoh macam IG").
+// Galeri kenangan -- foto atau video.
 model ClassMemory {
-  id          String     @id @default(uuid())
-  mediaUrl    String
-  mediaType   MemoryType @default(IMAGE)
-  caption     String
-
-  uploadedBy  String
-  uploader    User       @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
-
-  uploadDate  DateTime   @default(now())
+  id         String     @id @default(uuid())
+  mediaUrl   String
+  mediaType  MemoryType @default(IMAGE)
+  caption    String
+  uploadedBy String
+  uploader   User       @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  uploadDate DateTime   @default(now())
 }
 
-// BARU: Portofolio/pencapaian, satu orang bisa punya banyak entri
-// (relasi one-to-many User -> Portfolio).
+// Portofolio/pencapaian -- satu user bisa punya banyak entri.
 model Portfolio {
   id          String   @id @default(uuid())
   title       String
   description String?
-  category    String?  // contoh: "Lomba", "Proyek", "Sertifikat"
-  link        String?  // opsional: link eksternal (GitHub, sertifikat, dsb.)
-  imageUrl    String?  // opsional: gambar sampul/bukti
-
+  category    String?
+  link        String?
+  imageUrl    String?
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

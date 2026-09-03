@@ -1,10 +1,14 @@
-// Peran Pengguna dalam Sistem
+// Izin akses pengguna (bukan pengakuan prestasi -- lihat Badge)
 export type UserRole = 'STUDENT' | 'ADMIN';
+
+// Border kosmetik profil -- harus persis sama dengan enum ProfileBorder di schema.prisma
+export type ProfileBorder = 'DEFAULT' | 'GOLD' | 'NEON';
 
 // Jenis media di Galeri
 export type MemoryType = 'IMAGE' | 'VIDEO';
 
-// Profil Utama
+// Profil publik -- bentuk data yang ditampilkan ke user lain (bukan bentuk
+// mentah tabel User; email & passwordHash sengaja tidak diekspor di sini).
 export interface UserProfile {
   id: string;
   fullName: string;
@@ -12,52 +16,47 @@ export interface UserProfile {
   role: UserRole;
   avatarUrl?: string;
   bio?: string;
-
-  // Kosmetik Profil
-  profileBorder?: 'border-gold' | 'border-neon' | 'border-default';
+  profileBorder?: ProfileBorder;
   badges: Badge[];
-
-  // Media Sosial
   socialLinks?: {
     instagram?: string;
     github?: string;
     portfolio?: string;
   };
-
   createdAt: Date;
+  updatedAt: Date;
 }
 
-// Badge (Penghargaan/Identitas)
+// Badge prestasi -- termasuk "Top Contributor"
 export interface Badge {
   id: string;
-  name: string;      // Contoh: "Top Contributor", "Ahli CSS"
+  name: string;
   iconUrl: string;
   description: string;
 }
 
-// Galeri Kenangan (mendukung foto & video)
+// Galeri kenangan -- foto atau video
 export interface ClassMemory {
   id: string;
   mediaUrl: string;
   mediaType: MemoryType;
   caption: string;
-  uploadedBy: string; // Merujuk ke id dari UserProfile
+  uploadedBy: string;
   uploadDate: Date;
 }
 
-// Portofolio / Pencapaian -- satu user bisa punya banyak entri
+// Portofolio/pencapaian -- satu user bisa punya banyak entri
 export interface Portfolio {
   id: string;
   title: string;
   description?: string;
-  category?: string;   // contoh: "Lomba", "Proyek", "Sertifikat"
+  category?: string;
   link?: string;
   imageUrl?: string;
-  ownerId: string;      // Merujuk ke id dari UserProfile
+  ownerId: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// CATATAN: tipe `Whitelist` sengaja TIDAK diekspor di sini.
-// Whitelist murni logika verifikasi internal backend (cek saat registrasi),
-// frontend tidak perlu dan tidak boleh tahu isi seluruh daftar whitelist.
+// CATATAN: `Whitelist` sengaja tidak diekspor -- murni logika verifikasi
+// internal backend, frontend tidak perlu tahu isi daftarnya.

@@ -1,14 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 
-// Mendeklarasikan ruang global untuk TypeScript agar mengenali objek prisma
+// Singleton -- cegah banyak instance PrismaClient saat hot-reload.
 declare global {
   var prisma: PrismaClient | undefined;
 }
 
-// Menerapkan pola Singleton
-export const prisma = global.prisma || new PrismaClient();
+export const prisma =
+  global.prisma ||
+  new PrismaClient({
+    // Tampilkan query SQL di terminal saat development -- bantu debug.
+    log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+  });
 
-// Pada lingkungan pengembangan, simpan instance ke ruang global agar tidak terjadi koneksi ganda
 if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma;
 }

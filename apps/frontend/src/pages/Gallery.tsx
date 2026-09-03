@@ -1,14 +1,14 @@
 /**
- * Home: Halaman Beranda Utama Website XI PPLG A.
+ * Gallery: Halaman Galeri Foto dan Video kenangan.
  * Konten halaman ini otomatis masuk ke dalam tag <main> milik MainLayout.
  */
 
-const Home = () => {
+const Gallery = () => {
     return (
         <div>
-            <h1>Home</h1>
+            <h1>Gallery</h1>
         </div>
     );
 };
 
-export default Home;
+export default Gallery;

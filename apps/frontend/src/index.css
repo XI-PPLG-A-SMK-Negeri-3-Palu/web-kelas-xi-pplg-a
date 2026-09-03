@@ -1,12 +1,27 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-primary: #3b82f6;
-  --color-secondary: #1e40af;
+  --color-primary-100: #d1fae5;
+  --color-primary-500: #10b981;
+  --color-primary-600: #059669;
+
+  --color-title: #0f172a;
+  --color-subtitle: #475569;
+  --color-text: #334155;
+
+  --color-bg-light: #f1f5f9;
+  --color-bg-dark: #0f172a;
 }
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased min-h-screen;
+    @apply bg-bg-light text-text antialiased min-h-screen;
+  }
+
+  /* Dark mode sementara ditunda, fokus pada light mode terlebih dahulu. */
+  .dark body {
+    @apply bg-bg-dark text-slate-100;
   }
 }

@@ -23,10 +23,13 @@ const MainLayout = () => {
               <Link to="/" className="hover:text-primary-500 transition-colors">Beranda</Link>
             </li>
             <li>
-              <Link to="/portofolio" className="hover:text-primary-500 transition-colors">Portofolio</Link>
+              <Link to="/kontributor-web" className="hover:text-primary-500 transition-colors">Kontributor Web</Link>
             </li>
             <li>
-              <Link to="/galeri" className="hover:text-primary-500 transition-colors">Galeri</Link>
+              <Link to="/profil-murid" className="hover:text-primary-500 transition-colors">Profil Murid</Link>
+            </li>
+            <li>
+              <Link to="/galeri" className="hover:text-primary-500 transition-colors">Galeri &amp; Kenangan</Link>
             </li>
           </ul>
 
@@ -54,13 +57,13 @@ const MainLayout = () => {
 
             <ul className="flex items-center gap-4 text-xs font-medium">
               <li>
-                <Link to="#" className="hover:text-primary-500 transition-colors">Kontributor Web</Link>
-              </li>
-              <li>
-                <Link to="#" className="hover:text-primary-500 transition-colors">Struktur Kelas</Link>
+                <Link to="#" className="hover:text-primary-500 transition-colors">Hubungi Kami</Link>
               </li>
               <li>
                 <Link to="#" className="hover:text-primary-500 transition-colors">Kebijakan Privasi</Link>
+              </li>
+              <li>
+                <Link to="#" className="hover:text-primary-500 transition-colors">Tentang Kami</Link>
               </li>
             </ul>
           </div>

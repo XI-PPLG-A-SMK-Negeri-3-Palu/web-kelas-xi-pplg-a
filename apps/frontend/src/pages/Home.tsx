@@ -52,7 +52,7 @@ export default function Home() {
             Ruang berbagi karya, kenangan, dan pencapaian kelas kita.
           </p>
           <Link
-            to="/murid"
+            to="/profil-murid"
             className="mt-8 inline-block rounded-md bg-primary-500 px-6 py-3 font-medium text-white transition-colors hover:bg-primary-600"
           >
             Kenali Anggota Kelas
@@ -85,7 +85,7 @@ export default function Home() {
           merayakan pencapaian setiap anggota kelas.
         </p>
         <Link
-          to="/murid"
+          to="/profil-murid"
           className="mt-6 inline-block font-medium text-primary-600 transition-colors hover:text-primary-700"
         >
           Kenali Seluruh Anggota Kelas
